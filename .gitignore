@@ -1,0 +1,23 @@
+# Android / Gradle
+.gradle/
+build/
+*/build/
+captures/
+.externalNativeBuild/
+.cxx/
+*.iml
+.idea/
+.DS_Store
+
+# 비밀값·서명 (절대 커밋 금지)
+local.properties
+*.jks
+*.keystore
+keystore.properties
+
+# 개인 Claude 설정
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Kotlin 컴파일러 세션 파일
+.kotlin/

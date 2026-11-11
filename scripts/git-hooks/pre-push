@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# git pre-push: 원격에 올리기 전 더 무거운 검사(빌드 + Android Lint). 실패하면 push되지 않는다.
+while read -r _ _ remote_ref _; do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/master) [ "${ALLOW_MAIN:-0}" = "1" ] && continue; echo "main에는 직접 push할 수 없습니다. PR로 합치세요." >&2; exit 1 ;;
+  esac
+done
+[ -f ./gradlew ] || exit 0
+./scripts/check.sh --ci || exit 1
+mkdir -p build
+COV=""; grep -qs "kover" build.gradle.kts app/build.gradle.kts gradle/libs.versions.toml && COV="koverVerify"
+if ! ./gradlew --console=plain --quiet assembleDebug lintDebug $COV >build/prepush.log 2>&1; then
+  echo "pre-push: 빌드/Lint/커버리지 실패 — build/prepush.log" >&2
+  grep -E "^e: |error:|What went wrong|Errors? found|Rule violated|coverage" build/prepush.log | head -n 20 >&2
+  exit 1
+fi
+echo "pre-push: PASS"

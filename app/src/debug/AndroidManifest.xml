@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application android:networkSecurityConfig="@xml/network_security_config">
+        <!-- debug 빌드에만 들어간다. adb 브로드캐스트를 받으려면 exported여야 한다. -->
+        <receiver
+            android:name=".debug.SimReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="io.backseatlab.playground.SIM" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

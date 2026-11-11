@@ -1,0 +1,32 @@
+# 기본 규칙 위에 얹는다. 안 쓰는 코드는 오류로 막는다(CLAUDE.md: 안 쓰는 코드는 남기지 않는다).
+# detekt 2.0의 이름: UnusedPrivateMember → UnusedPrivateFunction·UnusedPrivateProperty·UnusedPrivateClass, UnusedImports → UnusedImport
+style:
+  UnusedImport:
+    active: true
+  UnusedPrivateFunction:
+    active: true
+  UnusedPrivateProperty:
+    active: true
+  UnusedPrivateClass:
+    active: true
+  UnusedParameter:
+    active: true
+  UnusedVariable:
+    active: true
+  MagicNumber:
+    excludes: ['**/test/**', '**/testDebug/**']
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+    # 테스트 이름은 한국어 백틱 문장으로 쓴다
+    excludes: ['**/test/**', '**/testDebug/**']
+
+# SDK 어댑터는 신호 종류만큼 함수가 필요하고, SDK 초기화는 어떤 예외든 앱을 죽이면 안 된다.
+# PleosClient는 SDK 경계 하나에 모든 SDK 기능을 모은다(D-026). SessionController는 설계서 6절대로 이용 흐름 이벤트를 한 클래스에서 처리하고, Fake는 PleosClient 멤버 수만큼 함수가 있다.
+complexity:
+  TooManyFunctions:
+    excludes: ['**/pleos/PleosClient.kt', '**/pleos/sdk/**', '**/pleos/fake/**', '**/session/SessionController.kt', '**/SessionControllerTest.kt']
+exceptions:
+  TooGenericExceptionCaught:
+    excludes: ['**/pleos/sdk/**']

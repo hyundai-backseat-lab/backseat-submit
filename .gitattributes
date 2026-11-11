@@ -1,0 +1,10 @@
+# Windows(core.autocrlf=true)에서도 셸 스크립트는 LF를 유지해야 Git Bash에서 실행된다
+* text=auto
+*.sh text eol=lf
+scripts/git-hooks/* text eol=lf
+gradlew text eol=lf
+*.bat text eol=crlf
+docs/progress.md merge=union
+*.png binary
+*.apk binary
+*.jar binary

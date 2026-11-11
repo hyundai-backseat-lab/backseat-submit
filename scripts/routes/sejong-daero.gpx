@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="backseat-playground">
+  <trk><name>세종대로 남쪽 방향 약 1km</name><trkseg>
+    <trkpt lat="37.575900" lon="126.976900"/>
+    <trkpt lat="37.575445" lon="126.976950"/>
+    <trkpt lat="37.574990" lon="126.977000"/>
+    <trkpt lat="37.574535" lon="126.977050"/>
+    <trkpt lat="37.574080" lon="126.977100"/>
+    <trkpt lat="37.573625" lon="126.977150"/>
+    <trkpt lat="37.573170" lon="126.977200"/>
+    <trkpt lat="37.572715" lon="126.977250"/>
+    <trkpt lat="37.572260" lon="126.977300"/>
+    <trkpt lat="37.571805" lon="126.977350"/>
+    <trkpt lat="37.571350" lon="126.977400"/>
+    <trkpt lat="37.570895" lon="126.977450"/>
+    <trkpt lat="37.570440" lon="126.977500"/>
+    <trkpt lat="37.569985" lon="126.977550"/>
+    <trkpt lat="37.569530" lon="126.977600"/>
+    <trkpt lat="37.569075" lon="126.977650"/>
+    <trkpt lat="37.568620" lon="126.977700"/>
+    <trkpt lat="37.568165" lon="126.977750"/>
+    <trkpt lat="37.567710" lon="126.977800"/>
+    <trkpt lat="37.567255" lon="126.977850"/>
+    <trkpt lat="37.566800" lon="126.977900"/>
+  </trkseg></trk>
+</gpx>

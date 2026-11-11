@@ -1,0 +1,44 @@
+name: android
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Android 프로젝트 존재 확인
+        id: proj
+        run: |
+          if [ -f gradlew ]; then echo "exists=true" >> "$GITHUB_OUTPUT"; else echo "exists=false" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-java@v4
+        if: steps.proj.outputs.exists == 'true'
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.proj.outputs.exists == 'true'
+      - name: 검사(ktlint + 단위 테스트)
+        if: steps.proj.outputs.exists == 'true'
+        run: chmod +x gradlew && bash ./scripts/check.sh --ci
+      - name: 빌드 + Lint
+        if: steps.proj.outputs.exists == 'true'
+        run: ./gradlew --console=plain assembleDebug lintDebug
+      - name: 테스트 커버리지(핵심 로직 기준선)
+        if: steps.proj.outputs.exists == 'true'
+        run: if grep -qs kover app/build.gradle.kts build.gradle.kts gradle/libs.versions.toml; then ./gradlew --console=plain koverVerify koverHtmlReport; fi
+      - name: release 빌드(난독화 포함, 서명 없이) — 제출 APK만 깨지는 문제 조기 발견
+        if: steps.proj.outputs.exists == 'true'
+        run: ./gradlew --console=plain assembleRelease
+      - name: 실패 로그 요약
+        if: failure()
+        run: tail -n 80 build/check.log || true
+      - uses: actions/upload-artifact@v4
+        if: steps.proj.outputs.exists == 'true'
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: ignore

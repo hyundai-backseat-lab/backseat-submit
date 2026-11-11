@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">벌써도착</string>
+
+    <string name="start">시작</string>
+    <string name="pause">쉬기</string>
+    <string name="location_consent">위치로 주변 가게 찾기</string>
+    <string name="cards_open">목소리 카드</string>
+    <string name="cards_consent_notice">아이 목소리를 녹음해 놀이에 써요.\n녹음은 이 기기에만 저장돼요. 보호자가 동의해 주세요.</string>
+    <string name="cards_agree">동의</string>
+    <string name="cards_revoke">동의 철회</string>
+    <string name="cards_close">닫기</string>
+    <string name="cards_tab_easy">초급</string>
+    <string name="cards_tab_normal">중급</string>
+    <string name="cards_tab_hard">고급</string>
+    <string name="cards_tab_vehicle">차량</string>
+    <string name="cards_record">녹음</string>
+    <string name="cards_stop">멈춤</string>
+    <string name="cards_delete">삭제</string>
+    <string name="cards_delete_all">전체 삭제</string>
+    <string name="cards_recorded">%1$s ✓</string>
+    <string name="cards_saved">저장했어요</string>
+    <string name="cards_try_louder">한 번 더 크게!</string>
+    <string name="cards_failed">녹음하지 못했어요</string>
+    <string name="card_vehicle_wiper">와이퍼 출동</string>
+    <string name="card_vehicle_arrived">벌써 도착</string>
+    <string name="card_vehicle_bye">다녀오세요</string>
+    <string name="summary_progress">%1$s · 미션 %2$d · 찾은 %3$d개</string>
+    <string name="pause_other_voice">안내가 끝나면 이어서 해요</string>
+    <string name="pause_turn">방향지시등이 꺼지면 이어서 해요</string>
+    <string name="pause_hazard">비상등이 꺼지면 이어서 해요</string>
+    <string name="pause_brake">잠깐 멈췄어요</string>
+    <string name="phase_idle">시작 전</string>
+    <string name="phase_guiding">안내 중</string>
+    <string name="phase_listening">듣는 중</string>
+    <string name="phase_thinking">생각 중</string>
+    <string name="phase_resting">쉬는 중</string>
+    <string name="phase_paused">잠시 멈춤</string>
+    <string name="phase_ended">끝났어요</string>
+    <string name="result_found">찾은 미션 %1$d개</string>
+    <string name="result_played">진행한 미션 %1$d개 · 힌트 %2$d번</string>
+    <string name="result_after_parking">결과는 주차하면 볼 수 있어요</string>
+    <string name="block_not_parked">주차하면 시작할 수 있어요</string>
+    <string name="block_warning">경고가 꺼지면 시작해요</string>
+    <string name="block_no_mic">마이크를 허용하면 시작해요</string>
+    <string name="block_voice">음성을 준비하고 있어요</string>
+
+    <string name="status_no_signal">주행 신호 없음</string>
+    <string name="status_partial">켜진 신호 없음 (일부 확인 중)</string>
+    <string name="status_not_connected">차량 연결 안 됨</string>
+    <string name="status_unsupported">미지원: %1$s</string>
+
+    <string name="signal_turn">방향지시등</string>
+    <string name="signal_turn_left">왼쪽 방향지시등</string>
+    <string name="signal_turn_right">오른쪽 방향지시등</string>
+    <string name="signal_hazard">비상등</string>
+    <string name="signal_brake">브레이크</string>
+    <string name="signal_parking_brake">주차 브레이크</string>
+    <string name="signal_warning">경고</string>
+    <string name="signal_wiper">와이퍼</string>
+    <string name="signal_door">문 열림</string>
+    <string name="signal_speed">속도</string>
+    <string name="signal_gear">기어</string>
+</resources>

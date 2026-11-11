@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# git pre-commit: 사람이 커밋하든 Claude가 커밋하든 검사를 통과해야 커밋된다. (Claude 토큰 사용 없음)
+branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+if { [ "$branch" = "main" ] || [ "$branch" = "master" ]; } && [ "${ALLOW_MAIN:-0}" != "1" ]; then
+  echo "main 브랜치에 직접 커밋할 수 없습니다. 기능 브랜치를 만드세요." >&2
+  exit 1
+fi
+# 문서만 바뀐 커밋은 검사 생략
+if git diff --cached --name-only | grep -Eqv '\.(md|png|jpg|txt)$'; then
+  ./scripts/check.sh --ci || { echo "pre-commit: 검사 실패로 커밋이 취소되었습니다." >&2; exit 1; }
+fi
+exit 0
