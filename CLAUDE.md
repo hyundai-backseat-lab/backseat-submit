@@ -1,4 +1,4 @@
-# 벌써도착 (backseat-playground)
+# 창밖탐험대 (backseat-playground)
 
 뒷좌석 아이와 음성으로 노는 Pleos Connect(AAOS) 차량용 앱. 현대차그룹 차량용 앱 개발 공모전 출품작.
 공모전 규칙·일정: docs/contest.md / 기획서: docs/plan-proposal.md

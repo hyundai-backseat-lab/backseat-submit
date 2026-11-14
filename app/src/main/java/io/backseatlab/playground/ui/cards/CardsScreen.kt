@@ -1,25 +1,39 @@
 package io.backseatlab.playground.ui.cards
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.backseatlab.playground.R
 import io.backseatlab.playground.session.CardTab
 import io.backseatlab.playground.session.TakeResult
+import io.backseatlab.playground.ui.theme.AppCard
+import io.backseatlab.playground.ui.theme.BrandOrange
+import io.backseatlab.playground.ui.theme.HeroLayout
+import io.backseatlab.playground.ui.theme.PageBackground
+import io.backseatlab.playground.ui.theme.PauseText
+import io.backseatlab.playground.ui.theme.Pill
+import io.backseatlab.playground.ui.theme.PrimaryButton
+import io.backseatlab.playground.ui.theme.QuietButton
+import io.backseatlab.playground.ui.theme.SecondaryButton
+import io.backseatlab.playground.ui.theme.Space
+import io.backseatlab.playground.ui.theme.WideLayout
 
 /** 녹음 화면(SC-08). 주차 중, 이용 밖에서만 열린다. 동의 전에는 동의 안내만 보인다. */
 @Composable
@@ -34,29 +48,78 @@ fun CardsScreen(
     onCloseClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(PageBackground)
+                .padding(horizontal = Space.edge, vertical = Space.xl),
+        verticalArrangement = Arrangement.spacedBy(Space.l),
     ) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(stringResource(R.string.cards_open), style = MaterialTheme.typography.headlineMedium)
+            SecondaryButton(stringResource(R.string.cards_close), onCloseClick)
+        }
         if (!state.consented) {
-            CardText(stringResource(R.string.cards_consent_notice))
-            Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                CardButton(stringResource(R.string.cards_agree), onClick = onAgreeClick)
-                CardButton(stringResource(R.string.cards_close), outlined = true, onClick = onCloseClick)
-            }
+            ConsentBody(onAgreeClick, Modifier.weight(1f))
             return@Column
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(Space.s)) {
             CardTab.entries.forEach { tab ->
-                CardButton(stringResource(tab.labelRes()), outlined = tab != state.tab) { onTabClick(tab) }
+                val label = stringResource(tab.labelRes())
+                if (tab == state.tab) {
+                    PrimaryButton(label, { onTabClick(tab) })
+                } else {
+                    SecondaryButton(label, { onTabClick(tab) })
+                }
             }
         }
-        state.slots.forEach { row -> SlotRow(row, state.recording, onRecordClick, onDeleteClick) }
-        state.lastTake?.messageRes()?.let { CardText(stringResource(it)) }
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            CardButton(stringResource(R.string.cards_delete_all), outlined = true, onClick = onDeleteAllClick)
-            CardButton(stringResource(R.string.cards_revoke), outlined = true, onClick = onRevokeClick)
-            CardButton(stringResource(R.string.cards_close), onClick = onCloseClick)
+        AppCard(Modifier.fillMaxWidth()) {
+            SlotGrid(state.slots, state.recording, onRecordClick, onDeleteClick)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(Space.m), verticalAlignment = Alignment.CenterVertically) {
+            state.lastTake?.messageRes()?.let { Pill(stringResource(it)) }
+            Spacer(Modifier.weight(1f))
+            QuietButton(stringResource(R.string.cards_delete_all), onDeleteAllClick)
+            QuietButton(stringResource(R.string.cards_revoke), onRevokeClick)
+        }
+    }
+}
+
+@Composable
+private fun ConsentBody(
+    onAgreeClick: () -> Unit,
+    modifier: Modifier,
+) {
+    val mascot = @Composable { Image(painterResource(R.drawable.rody_listen), null, Modifier.size(300.dp)) }
+    HeroLayout(mascot, modifier.widthIn(max = 1400.dp)) {
+        AppCard(Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.cards_consent_notice), style = MaterialTheme.typography.bodyLarge)
+            PrimaryButton(stringResource(R.string.cards_agree), onAgreeClick)
+        }
+    }
+}
+
+/** 넓은 화면은 두 줄로 나눠 스크롤 없이 한 탭의 카드를 모두 보여 준다. */
+@Composable
+private fun SlotGrid(
+    slots: List<CardRow>,
+    recording: String?,
+    onRecordClick: (String) -> Unit,
+    onDeleteClick: (String) -> Unit,
+) {
+    BoxWithConstraints {
+        val columns = if (maxWidth >= WideLayout) 2 else 1
+        Column(verticalArrangement = Arrangement.spacedBy(Space.s)) {
+            slots.chunked(columns).forEach { pair ->
+                Row(horizontalArrangement = Arrangement.spacedBy(Space.xl)) {
+                    pair.forEach { SlotRow(it, recording, onRecordClick, onDeleteClick, Modifier.weight(1f)) }
+                    if (pair.size < columns) Spacer(Modifier.weight(1f))
+                }
+            }
         }
     }
 }
@@ -67,40 +130,21 @@ private fun SlotRow(
     recording: String?,
     onRecordClick: (String) -> Unit,
     onDeleteClick: (String) -> Unit,
+    modifier: Modifier,
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
-        CardText(if (row.recorded) stringResource(R.string.cards_recorded, row.label) else row.label)
-        val label = if (recording == row.cardId) R.string.cards_stop else R.string.cards_record
-        CardButton(stringResource(label)) { onRecordClick(row.cardId) }
-        if (row.recorded) {
-            CardButton(stringResource(R.string.cards_delete), outlined = true) { onDeleteClick(row.cardId) }
+    Row(
+        modifier,
+        horizontalArrangement = Arrangement.spacedBy(Space.s),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(row.label, style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+        if (row.recorded) Pill(stringResource(R.string.cards_recorded_badge))
+        if (recording == row.cardId) {
+            PrimaryButton(stringResource(R.string.cards_stop), { onRecordClick(row.cardId) }, color = BrandOrange)
+        } else {
+            SecondaryButton(stringResource(R.string.cards_record), { onRecordClick(row.cardId) })
         }
-    }
-}
-
-@Composable
-private fun CardText(text: String) {
-    // 기본 줄 높이(24sp)는 28sp 글자보다 작아 여러 줄이면 겹친다
-    Text(
-        text = text,
-        fontSize = 28.sp,
-        lineHeight = 40.sp,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onBackground,
-    )
-}
-
-@Composable
-private fun CardButton(
-    text: String,
-    outlined: Boolean = false,
-    onClick: () -> Unit,
-) {
-    val size = Modifier.sizeIn(minWidth = 120.dp, minHeight = 76.dp)
-    if (outlined) {
-        OutlinedButton(onClick = onClick, modifier = size) { Text(text = text, fontSize = 28.sp) }
-    } else {
-        Button(onClick = onClick, modifier = size) { Text(text = text, fontSize = 28.sp) }
+        if (row.recorded) QuietButton(stringResource(R.string.cards_delete), { onDeleteClick(row.cardId) }, PauseText)
     }
 }
 

@@ -1,11 +1,11 @@
 # 결정 기록 (Decision Log)
 
 ## D-001 가칭 확정 (2026-11-05, 임시 — 팀 확정 시 교체)
-- 앱명: 벌써도착 / 코드명 backseat-playground
+- 앱명: 창밖탐험대(구 벌써도착, D-037) / 코드명 backseat-playground
 - 팀명: 뒷좌석연구소 / Backseat Lab
 - GitHub: Organization hyundai-backseat-lab, 저장소 backseat-playground (private, 팀 결정). 앱 코드명·패키지명도 저장소 이름에 맞춤(backseat-playground, io.backseatlab.playground)
 - applicationId: io.backseatlab.playground
-- APK: BackseatLab_BackseatPlayground_release.apk (규칙: 팀명_앱이름_release.apk)
+- APK: BackseatLab_창밖탐험대_release.apk (규칙: 팀명_앱이름_release.apk)
 - 이유: 기획서 한 줄 소개("아빠, 언제 도착해?" → "벌써 도착했어?")와 직결, 영문 코드명은 ASCII 파일명·패키지명에 안전
 - 교체 비용: 표시 이름(app_name)·README는 언제든 교체 가능. applicationId·저장소명은 초기에만 바꾸기 쉬우므로 1차 제출 전 확정 권장
 
@@ -254,3 +254,9 @@
 결정자: 사람. 적용: `SessionLines.farewell`, `SessionController.confirmQuit`, features.md 공통 정책(음성 제어·무음 종료).
 - 설계서 1절은 종료 음성을 없앴지만, 시연에서 아이가 "그만할래 → 응" 하면 아무 말 없이 끝나 어색했다. 아이가 직접 그만하기를 확인한 경우에만 "오늘도 대단해요! n개 맞췄어요! 다음에 또 같이 놀아요!"를 말하고 종료한다(n = 맞힌 수, 0개면 "다음에 또 같이 놀아요!"만). 차량 경고·휴식 2분 초과·화면 이탈·음성 장애·확인 중 멈춤은 그대로 무음 종료.
 - 난이도 말을 음성 인식이 "초금"·"조급"처럼 바꿔 듣는 일이 있어 비슷한 소리와 "보통"·"처음"도 받는다.
+
+## D-037 앱 이름을 창밖탐험대로 변경 (2026-11-14)
+결정자: 사람. 적용: `strings.xml app_name`, README, CLAUDE.md, 제출 APK 파일명.
+- 앱 이름을 "벌써도착"에서 "창밖탐험대"로 바꿨다(개발자 A가 화면·README 반영). 코드명 backseat-playground와 패키지 `io.backseatlab.playground`는 그대로 둔다(바꾸면 서명·설치 이력이 달라지고 얻는 것이 없다).
+- "벌써 도착했어요!"는 도착 마무리 대사라서 그대로 둔다. 요구사항·설계서 제목의 "벌써도착"은 팀 확정 문서라 고치지 않는다.
+- 제출 APK 파일명은 공모전 규칙(팀명_앱이름_release.apk)대로 `BackseatLab_창밖탐험대_release.apk`.

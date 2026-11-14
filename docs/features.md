@@ -126,7 +126,7 @@ F-00~F-02는 기존 구조(car/·game/ GameEngine)로 머지됐다. 코드는 F-
 2. 품질 도구 설정: ktlint(코드 모양), detekt(안 쓰는 코드·복잡도, 기본 규칙 + `UnusedPrivateMember`·`UnusedImports` 오류 처리), Android Lint(`UnusedResources` 오류 처리), Kover(커버리지: safety·game·voice 패키지 라인 80% 미만이면 koverVerify 실패, car/pleos·ui·debug·di 제외). `./scripts/check.sh`가 ktlintCheck·detekt·단위 테스트를 돌려 PASS. `.editorconfig`에 `ktlint_function_naming_ignore_when_annotated_with=Composable`. 테스트 실패 시 이름·원인이 출력되도록 `testLogging { events("failed"); exceptionFormat = FULL }`.
 3. `car/` 패키지에 `VehicleSignals` 인터페이스(방향지시등, 비상등, 브레이크 페달, 주차 브레이크, 경고, 와이퍼, 문, 속도를 Flow로 제공)와 Pleos 구현, Fake 구현이 있다. 지원하지 않는 항목은 Capability로 확인해 "미지원"으로 표시한다.
 4. debug 빌드 구조는 "Pleos 구현 + Sim 덮어쓰기": `SimReceiver`(debug 소스셋, exported, `RECEIVER_EXPORTED`)가 `./scripts/sim.sh brake-on` 등을 받으면 해당 값만 덮어쓰고 로그 `Backseat SIM brake=ON`. release 빌드에는 포함되지 않는다.
-5. 에뮬레이터에서 앱이 실행되어 "벌써도착" 타이틀과 현재 차량 신호 상태가 보인다(`EXPECT="벌써도착"` verify PASS).
+5. 에뮬레이터에서 앱이 실행되어 "창밖탐험대" 타이틀과 현재 차량 신호 상태가 보인다(`EXPECT="벌써도착"` verify PASS).
 6. 확인 기록(docs/sdk-notes/Vehicle.md): 속도 값 출처(Vehicle에 VehicleSpeedListener 없음, NaviHelper onDrivingInfo 확인)와 기어·주차 브레이크·와이퍼·비상등 값을 받는 방법, 그리고 Virtual Console로 바꿀 수 있는 신호 목록(사람 실측: Virtual Console 화면 캡처). domain.md 표기를 갱신한다.
 7. docs/architecture.md 진입점 표와 의존 그래프, docs/glossary.md 패키지 표가 실제 코드와 맞아 `./scripts/check-docs.sh`가 PASS.
 만들지 않을 것: 게임 로직, 음성, 디자인 다듬기
@@ -358,7 +358,7 @@ KPI: K2 준비, K5 근거 / 폰 테스트: 단독으로는 예 → F-09로 차�
 ## F-10 1차 제출 패키지 [pr] — 11/12 이후, 공식 마감 11/15 전
 완료 기준
 1. README에 앱 이름, 한 줄 소개, 실행 방법, 테스트 환경(기기·SDK·차량 서비스 버전 조합, 설계서 1절), 필요 설정, APK 위치(docs/contest.md 3번).
-2. release 서명 APK `apk/BackseatLab_BackseatPlayground_release.apk`가 에뮬레이터에서 실행된다(apk/ 쓰기는 사람). 서명 인증서 이름(CN)에 실명이 없다.
+2. release 서명 APK `apk/BackseatLab_창밖탐험대_release.apk`가 에뮬레이터에서 실행된다(apk/ 쓰기는 사람). 서명 인증서 이름(CN)에 실명이 없다.
 3. docs/demo-script.md: 60~90초 영상 대본. 화면 분할(Virtual Console + 앱) + 신호 로그 자막. sim 주입 장면은 "시뮬레이션" 자막.
 4. 설계서 7절 시연 확인표 전 항목 통과 기록.
 5. docs/architecture.md·glossary.md가 최신이고, "구조 1분 설명" 대본(docs/pt-brief.md)이 있다(PT 기술 Q&A 대비).

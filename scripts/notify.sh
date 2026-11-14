@@ -3,8 +3,8 @@
 cat >/dev/null
 msg="${1:-Claude가 확인을 기다리고 있어요}"
 if command -v powershell.exe >/dev/null 2>&1; then
-  powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; \$n=New-Object System.Windows.Forms.NotifyIcon; \$n.Icon=[System.Drawing.SystemIcons]::Information; \$n.Visible=\$true; \$n.ShowBalloonTip(5000,'벌써도착 · Claude','$msg',[System.Windows.Forms.ToolTipIcon]::Info); Start-Sleep 6; \$n.Dispose()" >/dev/null 2>&1 &
+  powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; \$n=New-Object System.Windows.Forms.NotifyIcon; \$n.Icon=[System.Drawing.SystemIcons]::Information; \$n.Visible=\$true; \$n.ShowBalloonTip(5000,'창밖탐험대 · Claude','$msg',[System.Windows.Forms.ToolTipIcon]::Info); Start-Sleep 6; \$n.Dispose()" >/dev/null 2>&1 &
 elif command -v osascript >/dev/null 2>&1; then
-  osascript -e "display notification \"$msg\" with title \"벌써도착 · Claude\"" >/dev/null 2>&1
+  osascript -e "display notification \"$msg\" with title \"창밖탐험대 · Claude\"" >/dev/null 2>&1
 fi
 exit 0

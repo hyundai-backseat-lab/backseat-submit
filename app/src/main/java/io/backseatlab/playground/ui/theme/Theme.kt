@@ -1,49 +1,30 @@
 package io.backseatlab.playground.ui.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme =
-    darkColorScheme(
-        primary = Purple80,
-        secondary = PurpleGrey80,
-        tertiary = Pink80,
-    )
-
-private val LightColorScheme =
+// 브랜드 색을 지키려고 기기 배경화면 색(dynamic color)과 다크 테마를 따르지 않는다
+private val BrandColorScheme =
     lightColorScheme(
-        primary = Purple40,
-        secondary = PurpleGrey40,
-        tertiary = Pink40,
+        primary = BrandBlue,
+        onPrimary = Color.White,
+        primaryContainer = BrandBlueSoft,
+        onPrimaryContainer = BrandBlue,
+        secondary = BrandOrange,
+        background = PageBackground,
+        onBackground = TextPrimary,
+        surface = PageBackground,
+        onSurface = TextPrimary,
+        onSurfaceVariant = TextSecondary,
+        outline = DividerLine,
     )
 
 @Composable
-fun BackseatPlaygroundTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit,
-) {
-    val colorScheme =
-        when {
-            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                val context = LocalContext.current
-                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            }
-
-            darkTheme -> DarkColorScheme
-            else -> LightColorScheme
-        }
-
+fun BackseatPlaygroundTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = BrandColorScheme,
         typography = Typography,
         content = content,
     )

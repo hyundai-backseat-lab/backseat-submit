@@ -1,28 +1,42 @@
 package io.backseatlab.playground.ui.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.backseatlab.playground.R
-import io.backseatlab.playground.session.PauseReason
 import io.backseatlab.playground.session.Phase
 import io.backseatlab.playground.session.SessionResult
 import io.backseatlab.playground.session.Signal
 import io.backseatlab.playground.session.StartBlock
+import io.backseatlab.playground.ui.theme.AppCard
+import io.backseatlab.playground.ui.theme.BrandBlue
+import io.backseatlab.playground.ui.theme.BrandOrange
+import io.backseatlab.playground.ui.theme.HeroLayout
+import io.backseatlab.playground.ui.theme.PageBackground
+import io.backseatlab.playground.ui.theme.PauseText
+import io.backseatlab.playground.ui.theme.Pill
+import io.backseatlab.playground.ui.theme.PrimaryButton
+import io.backseatlab.playground.ui.theme.QuietButton
+import io.backseatlab.playground.ui.theme.SecondaryButton
+import io.backseatlab.playground.ui.theme.Space
+import io.backseatlab.playground.ui.theme.StatTile
+import io.backseatlab.playground.ui.theme.StatusBadge
+import io.backseatlab.playground.ui.theme.TextSecondary
 
+/** 상단 브랜드·차량 상태, 가운데 화면 내용, 하단 버튼(주차 중에만). */
 @Composable
 fun MainScreen(
     state: MainUiState,
@@ -33,122 +47,127 @@ fun MainScreen(
     onCardsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val complete = state.phase == Phase.ENDED && state.result != null
     Column(
-        modifier = modifier.fillMaxSize().padding(32.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(PageBackground)
+                .padding(horizontal = Space.edge, vertical = Space.xl),
+        verticalArrangement = Arrangement.spacedBy(Space.l),
     ) {
-        when {
-            // 주행·정차 중 이용: 요약 패널(SC-04)만, 멈춤이면 사유(SC-05). 버튼은 없다
-            state.inSession && !state.parked -> SummaryPanel(state)
-            state.inSession -> {
-                SummaryPanel(state)
-                ParkedControls(state, onDifficultyClick, onPauseClick)
+        TopBar(state, home = !state.inSession, mascot = !state.inSession && !complete && state.parked)
+        // 내용과 버튼을 한 묶음으로 가운데에 둔다
+        Column(
+            Modifier.weight(1f).fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(Space.xl, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            when {
+                // 주행·정차 중 이용: 요약 패널(SC-04)만, 멈춤이면 사유(SC-05). 버튼·캐릭터는 없다
+                state.inSession && !state.parked -> DrivingPanel(state)
+                state.inSession -> ParkedSession(state, onDifficultyClick)
+                complete -> CompleteBody(state, requireNotNull(state.result))
+                else -> HomeBody(state)
             }
-            else -> IdleScreen(state, onStartClick, onLocationConsentClick, onCardsClick)
+            BottomActions(state, onStartClick, onPauseClick, onLocationConsentClick, onCardsClick)
         }
     }
 }
 
-/** 난이도·미션 순번·찾은 개수, 미션 제목 한 줄, 상태. 멈춤 중이면 사유. */
 @Composable
-private fun SummaryPanel(state: MainUiState) {
-    val play = state.play
-    if (play != null && play.missionNo > 0) {
-        BigText(stringResource(R.string.summary_progress, play.difficulty.orEmpty(), play.missionNo, play.found))
-        play.missionTitle?.let { BigText(it) }
-    }
-    BigText(stringResource(state.phase.labelRes()))
-    val reason =
-        when (state.pauses.firstOrNull()) {
-            PauseReason.FOCUS_LOSS -> R.string.pause_other_voice
-            PauseReason.TURN -> R.string.pause_turn
-            PauseReason.HAZARD -> R.string.pause_hazard
-            PauseReason.BRAKE -> R.string.pause_brake
-            null -> null
-        }
-    reason?.let { BigText(stringResource(it)) }
-}
-
-/** 주차 중에만: 난이도 버튼(SC-02, 게임이 난이도를 물을 때), 일시정지(= 휴식 요청). */
-@Composable
-private fun ParkedControls(
+private fun TopBar(
     state: MainUiState,
-    onDifficultyClick: (String) -> Unit,
-    onPauseClick: () -> Unit,
+    home: Boolean,
+    mascot: Boolean,
 ) {
-    if (state.showDifficulty) {
-        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            state.difficulties.forEach { level -> BigButton(level) { onDifficultyClick(level) } }
+    val type = MaterialTheme.typography
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(horizontalArrangement = Arrangement.spacedBy(Space.l), verticalAlignment = Alignment.CenterVertically) {
+            if (mascot) Rody(state, size = 200.dp)
+            Column(verticalArrangement = Arrangement.spacedBy(Space.xs)) {
+                val brand = if (home) type.displaySmall else type.displaySmall.copy(fontSize = 28.sp)
+                Text(stringResource(R.string.app_name), style = brand, color = BrandBlue)
+                if (home) Text(stringResource(R.string.brand_tagline), style = type.bodyMedium, color = TextSecondary)
+            }
+        }
+        Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(Space.xs)) {
+            StatusBadge(statusText(state), on = state.connected && state.active.isNotEmpty())
+            if (state.unsupported.isNotEmpty()) {
+                val names = state.unsupported.map { stringResource(it.labelRes()) }.joinToString(", ")
+                Text(stringResource(R.string.status_unsupported, names), style = type.bodySmall, color = TextSecondary)
+            }
         }
     }
-    if (state.showPause) BigButton(stringResource(R.string.pause)) { onPauseClick() }
 }
 
+/** 시작 화면(SC-01). 시작할 수 없으면 이유를 대신 보여 준다. */
 @Composable
-private fun IdleScreen(
+private fun HomeBody(state: MainUiState) {
+    AppCard(Modifier.widthIn(max = 1100.dp).fillMaxWidth()) {
+        Pill(stringResource(state.phase.labelRes()))
+        Text(stringResource(R.string.home_title), style = MaterialTheme.typography.headlineMedium)
+        val blocked = if (!state.parked) R.string.block_not_parked else state.startBlock?.labelRes()
+        if (blocked != null) {
+            Text(stringResource(blocked), style = MaterialTheme.typography.bodyLarge, color = PauseText)
+        } else {
+            Text(stringResource(R.string.home_hint), style = MaterialTheme.typography.bodyLarge, color = TextSecondary)
+        }
+    }
+}
+
+/** 결과(SC-07)는 주차 중에만 숫자를 보여 준다. */
+@Composable
+private fun CompleteBody(
+    state: MainUiState,
+    result: SessionResult,
+) {
+    val mascot: (@Composable () -> Unit)? = if (state.parked) ({ Rody(state, size = 340.dp) }) else null
+    val type = MaterialTheme.typography
+    HeroLayout(mascot, Modifier.widthIn(max = 1400.dp)) {
+        AppCard(Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.complete_title), style = type.headlineMedium)
+            if (!state.parked) {
+                Text(stringResource(R.string.result_after_parking), style = type.bodyLarge, color = TextSecondary)
+                return@AppCard
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Space.m)) {
+                val tile = Modifier.weight(1f)
+                val found = stringResource(R.string.stat_count, result.found)
+                StatTile(found, stringResource(R.string.stat_found), tile, BrandOrange)
+                val played = stringResource(R.string.stat_count, result.played)
+                StatTile(played, stringResource(R.string.stat_played), tile)
+                StatTile(stringResource(R.string.stat_times, result.hints), stringResource(R.string.stat_hints), tile)
+            }
+            Text(stringResource(R.string.complete_bye), style = type.bodyLarge, color = TextSecondary)
+        }
+    }
+}
+
+/** 터치 UI는 주차 중에만(F-06-02). 주행 중에는 숨길 뿐 아니라 ViewModel·세션에서도 다시 막는다. */
+@Composable
+private fun BottomActions(
     state: MainUiState,
     onStartClick: () -> Unit,
+    onPauseClick: () -> Unit,
     onLocationConsentClick: () -> Unit,
     onCardsClick: () -> Unit,
 ) {
-    Text(
-        text = stringResource(R.string.app_name),
-        fontSize = 48.sp,
-        color = MaterialTheme.colorScheme.primary,
-    )
-    BigText(statusText(state))
-    BigText(stringResource(state.phase.labelRes()))
-    state.result?.let { if (state.phase == Phase.ENDED) EndResult(it, state.parked) }
-    // 주행 중에는 숨길 뿐 아니라 ViewModel·세션에서도 다시 막는다
-    if (state.showStart) BigButton(stringResource(R.string.start), onStartClick)
-    if (state.showLocationConsent) BigButton(stringResource(R.string.location_consent), onLocationConsentClick)
-    // 녹음 화면(SC-08) 입구. 시작 버튼과 같은 때(주차 중, 이용 밖)에만
-    if (state.showStart) BigButton(stringResource(R.string.cards_open), onCardsClick)
-    val blocked = if (!state.parked) R.string.block_not_parked else state.startBlock?.labelRes()
-    blocked?.let { BigText(stringResource(it)) }
-    if (state.unsupported.isNotEmpty()) {
-        val names = state.unsupported.map { stringResource(it.labelRes()) }.joinToString(", ")
-        Text(
-            text = stringResource(R.string.status_unsupported, names),
-            fontSize = 24.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-    }
-}
-
-@Composable
-private fun BigText(text: String) {
-    Text(
-        text = text,
-        fontSize = 36.sp,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onBackground,
-    )
-}
-
-@Composable
-private fun BigButton(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Button(onClick = onClick, modifier = Modifier.sizeIn(minWidth = 200.dp, minHeight = 96.dp)) {
-        Text(text = text, fontSize = 36.sp)
-    }
-}
-
-/** 결과(SC-07)는 주차 중에만 보여 준다. */
-@Composable
-private fun EndResult(
-    result: SessionResult,
-    parked: Boolean,
-) {
-    // 한 Text에 줄바꿈으로 넣으면 기본 줄 높이(24sp)가 글자(36sp)보다 작아 두 줄이 겹친다. 줄마다 따로 그린다
-    if (parked) {
-        BigText(stringResource(R.string.result_found, result.found))
-        BigText(stringResource(R.string.result_played, result.played, result.hints))
-    } else {
-        BigText(stringResource(R.string.result_after_parking))
+    if (!state.showStart && !state.showPause) return
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Space.l, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (state.showStart) {
+            PrimaryButton(stringResource(R.string.start), onStartClick, Modifier.widthIn(min = 400.dp))
+            // 녹음 화면(SC-08) 입구. 시작 버튼과 같은 때(주차 중, 이용 밖)에만
+            SecondaryButton(stringResource(R.string.cards_open), onCardsClick)
+        }
+        if (state.showLocationConsent) {
+            QuietButton(stringResource(R.string.location_consent), onLocationConsentClick, BrandBlue)
+        }
+        if (state.showPause) SecondaryButton(stringResource(R.string.pause), onPauseClick)
     }
 }
 
@@ -159,17 +178,6 @@ private fun statusText(state: MainUiState): String =
         state.active.isEmpty() && state.hasUnknown -> stringResource(R.string.status_partial)
         state.active.isEmpty() -> stringResource(R.string.status_no_signal)
         else -> state.active.map { stringResource(it.labelRes()) }.joinToString(" · ")
-    }
-
-private fun Phase.labelRes(): Int =
-    when (this) {
-        Phase.IDLE -> R.string.phase_idle
-        Phase.GUIDING -> R.string.phase_guiding
-        Phase.LISTENING -> R.string.phase_listening
-        Phase.THINKING -> R.string.phase_thinking
-        Phase.RESTING -> R.string.phase_resting
-        Phase.PAUSED -> R.string.phase_paused
-        Phase.ENDED -> R.string.phase_ended
     }
 
 private fun StartBlock.labelRes(): Int =

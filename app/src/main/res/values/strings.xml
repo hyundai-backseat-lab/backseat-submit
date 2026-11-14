@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">벌써도착</string>
+    <string name="app_name">창밖탐험대</string>
 
     <string name="start">시작</string>
     <string name="pause">쉬기</string>
@@ -17,7 +17,6 @@
     <string name="cards_stop">멈춤</string>
     <string name="cards_delete">삭제</string>
     <string name="cards_delete_all">전체 삭제</string>
-    <string name="cards_recorded">%1$s ✓</string>
     <string name="cards_saved">저장했어요</string>
     <string name="cards_try_louder">한 번 더 크게!</string>
     <string name="cards_failed">녹음하지 못했어요</string>
@@ -29,6 +28,25 @@
     <string name="pause_turn">방향지시등이 꺼지면 이어서 해요</string>
     <string name="pause_hazard">비상등이 꺼지면 이어서 해요</string>
     <string name="pause_brake">잠깐 멈췄어요</string>
+    <string name="rody_quiet">쉿!</string>
+    <string name="brand_tagline">창밖을 보면서 같이 놀아요</string>
+    <string name="home_title">오늘의 창밖 탐험</string>
+    <string name="home_hint">시작을 누르면 로디가 말로 안내해요</string>
+    <string name="pick_title">오늘의 탐험 미션</string>
+    <string name="pick_count">난이도 %1$d가지</string>
+    <string name="pick_voice">말로 대답해도 돼요</string>
+    <string name="level_easy_desc">창밖에서 물건 찾기</string>
+    <string name="level_normal_desc">간판에서 글자 찾기</string>
+    <string name="level_hard_desc">간판에서 단어 찾기</string>
+    <string name="pause_title">잠깐 쉬어갈게요!</string>
+    <string name="complete_title">탐험 완료!</string>
+    <string name="complete_bye">다음에 또 같이 놀아요!</string>
+    <string name="stat_found">찾은 미션</string>
+    <string name="stat_played">진행한 미션</string>
+    <string name="stat_hints">힌트</string>
+    <string name="stat_count">%1$d개</string>
+    <string name="stat_times">%1$d번</string>
+    <string name="cards_recorded_badge">녹음됨</string>
     <string name="phase_idle">시작 전</string>
     <string name="phase_guiding">안내 중</string>
     <string name="phase_listening">듣는 중</string>
@@ -36,8 +54,6 @@
     <string name="phase_resting">쉬는 중</string>
     <string name="phase_paused">잠시 멈춤</string>
     <string name="phase_ended">끝났어요</string>
-    <string name="result_found">찾은 미션 %1$d개</string>
-    <string name="result_played">진행한 미션 %1$d개 · 힌트 %2$d번</string>
     <string name="result_after_parking">결과는 주차하면 볼 수 있어요</string>
     <string name="block_not_parked">주차하면 시작할 수 있어요</string>
     <string name="block_warning">경고가 꺼지면 시작해요</string>
